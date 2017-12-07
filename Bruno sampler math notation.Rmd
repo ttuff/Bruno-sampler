@@ -1,0 +1,118 @@
+---
+title: "Bruno's data sampler"
+output: html_notebook
+---
+
+We begin with a dataset that we would like to subsample to remove some bias. In the example below, these position data are $x$ and $y$ coordinate values that we could measure
+the Euclidean distance between. However, this method can work for any data where individual row indicate a unique position relative to the other data so, distances can be calculated between those points. Some examples of positional data include geographic, genetic, environemntal, or phylogenetic distances. 
+
+```{r}
+as.data.frame(matrix(c("x1", "x2", "x3", "x4", "y1", "y2", "y3", "y4") ,4,2, byrow=FALSE, dimnames = list(c("S1", "S2", "S3", "S4"), c("x","y"))))
+```
+
+The length of this dataset is defined as $m$ and the index values for each row define the vector $S$. 
+
+
+$$\mathbf{S = [S_{1}, S_{2},..., S_{m}] }$$
+
+
+Randomly remove one datum from $S$, called $s_{1}$, and use that index to start a second vector, $s$.
+
+$$\mathbf{s = [s_{1}] }$$
+
+$n$ defines the number of samples tobe drawn 
+
+Only the first sample is chosen at random, all subsequent samples are chosen according to the sampling procedure described below and continued without replacement until $s$ reaches length $n$
+
+
+
+$$\mathbf{ s = [s_{1}, s_{2},..., s_{n}]} $$
+
+
+$d$ is the distance between a point in $S$ and a point in $s$. This can be any type of distance measure that can be reported as a number, including: geographic, phylogenetic, genetic, and environmental distances. $d_{S_{1}, s_{1}} =$ the distance between points $S_{1}$ and $s_{1}$.
+
+
+$$\mathbf{M_{1}} = \left[\begin{array}
+{r}
+d_{S_{1}, s_{1}}  \\
+d_{S_{2}, s_{1}}  \\
+...  \\
+d_{S_{m}, s_{1}}  
+\end{array}\right]
+$$
+
+Calculate two weights, $W_{a}$ and $W_{b}$, values from each row, $*j$, of the matrix $M_{1}$
+
+$$\mathbf{W_{a} =  \frac{\sum_{i=1}^{n} d_{*j}}{n}} $$
+
+
+
+$$\mathbf{W_{b} = \min{(d_{*j})}}  $$
+
+This creates two weights for each row in matrix $M$. For each pair of weights representing each row of $M$, raise $W_{a_{j}}$ and $W_{b_{j}}$ to the power of $\alpha$ and sum them to define $W_{1_{j}}$.
+
+$$\mathbf{W_{1_{j}} = (W_{a_{j}})^\alpha + (W_{b_{j}})^\alpha} $$
+
+Create a new vector, $w_{1}$, by scaling each element of $W_{1}$ to fall within the range of 0 $\to$ 1.  
+
+$$\mathbf{ w_{1} = [\frac{ W_{1_{1}}}{\sum_{k=1}^{m} W_{1} }, \frac{ W_{1_{2}}}{\sum_{k=1}^{m} W_{1} }, ... , \frac{ W_{1_{k}}}{\sum_{k=1}^{m} W_{1} } ]}$$
+The weights described by $w_{1}$ correspond element-for-element with $S_{1}$. Sample one point from $S_{1}$, without replacement, according to probabilities defined by $w_{1}$. Add that sampled point to the vector $s_{1}$ and create a new matrix, $M_{2}$, with 2 columns and $m-2$ rows. 
+
+$$\mathbf{M_{2}} = \left[\begin{array}
+{r}
+d_{S_{1}, s_{1}} & d_{S_{1}, s_{2}}  \\
+d_{S_{2}, s_{1}} & d_{S_{2}, s_{2}}  \\
+... & ...  \\
+d_{S_{m-1 }, s_{1}} & d_{S_{m-1}, s_{2}} 
+\end{array}\right]
+$$
+
+Repeat this process of weighting samples, sampling them according to that weight, moving that sampled point from $S$ to $s$, and then recalculating the distance matrix until the length of $s = n$ to define $M_{n}$.
+
+
+$$\mathbf{M_{n}} = \left[\begin{array}
+{r}
+d_{S_{1}, s_{1}} & d_{S_{1}, s_{2}} & ... & d_{S_{1}, s_{n}} \\
+d_{S_{2}, s_{1}} & d_{S_{2}, s_{2}} & ... & d_{S_{1}, s_{n}} \\
+... & ... & \ddots & ... \\
+d_{S_{m-n}, s_{1}} & d_{S_{m-n}, s_{2}} & ... & d_{S_{m-n}, s_{n}} 
+\end{array}\right]
+$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
