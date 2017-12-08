@@ -1,6 +1,13 @@
 ---
-title: "Bruno's data sampler"
-output: html_notebook
+title: "Mean-min distance sampler"
+author: "Ty Tuff for Bruno Vilela"
+date: 'project began: Fall 2017, document updated: `r strftime(Sys.time(), format
+  = "%d %B %Y")`'
+output:
+  word_document: default
+  html_notebook: default
+  pdf_document: default
+  html_document: default
 ---
 
 We begin with a dataset that we would like to subsample to remove some bias. In the example below, these position data are $x$ and $y$ coordinate values that we could measure
@@ -20,7 +27,7 @@ Randomly remove one datum from $S$, called $s_{1}$, and use that index to start 
 
 $$\mathbf{s = [s_{1}] }$$
 
-$n$ defines the number of samples tobe drawn 
+$n$ defines the number of samples to be drawn 
 
 Only the first sample is chosen at random, all subsequent samples are chosen according to the sampling procedure described below and continued without replacement until $s$ reaches length $n$
 
@@ -50,6 +57,8 @@ $$\mathbf{W_{a} =  \frac{\sum_{i=1}^{n} d_{*j}}{n}} $$
 $$\mathbf{W_{b} = \min{(d_{*j})}}  $$
 
 This creates two weights for each row in matrix $M$. For each pair of weights representing each row of $M$, raise $W_{a_{j}}$ and $W_{b_{j}}$ to the power of $\alpha$ and sum them to define $W_{1_{j}}$.
+
+$\alpha =$ weighting exponent. This variable can range from $-\infty$ to $\infty$. Negative values of $\alpha$ will promote overdispersed sampling and positive values of $\alpha$ promote clumped sampling around the initial, randomely drawn, sample.   
 
 $$\mathbf{W_{1_{j}} = (W_{a_{j}})^\alpha + (W_{b_{j}})^\alpha} $$
 
